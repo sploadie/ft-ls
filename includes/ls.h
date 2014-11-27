@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/20 17:38:04 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/11/27 09:46:24 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 # include <time.h>
 # include <stdlib.h>
 # include <stdio.h>
+
+# include "libft.h"
+# include "arraylist.h"
+
+# define OPTIONS "Ralrt"
 
 /*
 ** Permitted functions:
