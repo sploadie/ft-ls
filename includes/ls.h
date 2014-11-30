@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/27 09:46:24 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/11/30 14:01:48 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,25 @@
 ** strerror
 ** exit
 */
+
+typedef struct stat	t_stat;
+
+typedef struct		s_filedir
+{
+	char			*name;
+	t_stat			*stats;
+	DIR				*dir;
+}					t_filedir;
+
+void				ls_perror(char *s);
+void				*check_malloc(void *ret);
+
+int					isoption(char *str);
+void				check_options(char *options);
+
+void				ft_strjoinfree(char **line, char *add);
+void				ft_sort_string_array(char **string_array, int size);
+
+t_filedir			*filedir(char *name, t_stat *stats);
 
 #endif
