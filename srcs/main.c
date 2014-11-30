@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 14:05:34 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/11/30 18:00:26 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,25 +44,63 @@
 
 // }
 
-// void	ls_gen(char *options, t_arraylist *stats)
-// {
-// 	//For arraylists
-// 	t_arraylist	*dirs;
-// 	t_arraylist	*files;
-// 	//For iterator
-// 	t_arlst_iter	*iter;
-// 	int				iter_ret;
-// 	//For printing
-// 	size_t			max_filename;
-// 	size_t			max_dirname;
+t_arraylist	*ls_dirs(t_arraylist *filedirs)
+{
+	t_arraylist		*dirs;
+	//For iterator
+	t_arlst_iter	*iter;
+	int				iter_ret;
+	t_filedir		*temp_filedir;
+	//For printing
+	size_t			max_name;
 
-// 	max_dirname = 0;
-// 	max_filename = 0;
-// 	(void)iter_ret;
-// 	(void)iter;
-// }
+	max_dirname = 0;
+	max_filename = 0;
+	dirs = NULL;
+	files = NULL;
+	iter_ret = 1;
+	while (iter_ret > 0)
+	{
+		temp_filedir = 
+	}
+	(void)iter_ret;
+	(void)iter;
+	//Get filedirs
+	return (filedirs);
+}
 
-int		main(int argc, char **argv)
+t_arraylist	*ls_gen_filedirs(DIR *dir)
+{
+	t_arraylist		*filedirs;
+
+	//Get filedirs
+	return (filedirs);
+}
+
+void	ls_l_lines(t_arraylist *filedirs)
+{
+	;
+}
+
+void	ls_print(t_arraylist *filedirs, char *options)
+{
+	//  For option -r, make iter->pip = iter->pop
+	;//man 4 tty
+}
+
+void		ls_buckle(char *options, t_arraylist *filedirs)
+{
+	//For looping
+	t_arraylist		*dirs;
+
+	//Print recieved filedirs (current dir)
+	//Then, for each dir in filedirs
+	//  Print "\n[dirname]:\n"
+	//  Recurse ls_buckle with filedirs from ls_gen_filedirs
+	//  For option -r, make iter->pip = iter->pop
+}
+
+int			main(int argc, char **argv)
 {
 	int				i;
 	char			*options;
@@ -70,9 +108,14 @@ int		main(int argc, char **argv)
 	char			**list;
 	int				listsize;
 	//Temporary DIR* holder
-	t_stat			*temp_stat;
+	t_filedir		*temp_filedir;
 	//For arraylist
-	t_arraylist		*stats;
+	t_arraylist		*filedirs;
+
+	//DEV//FIXME
+	// ft_putstr(argv[0]);//FIXME
+	// ft_putchar('\n');//FIXME
+	//DEV//FIXME
 
 	//Find options
 	options = check_malloc(ft_strnew(0));
@@ -83,28 +126,31 @@ int		main(int argc, char **argv)
 	//Check if options are valid
 	check_options(options);
 
-	//Sort 'directories'
+	//Get filedir names
 	list = argv + i;
 	listsize = argc - i;
+	//If none skip to ls_buckle with filedirs from ls_gen_filedirs of '.'//FIXME
+
+	//Sort filedir names
 	ft_sort_string_array(list, listsize);
 
 	//Open each 'directory'
 	i = 0;
-	stats = NULL;
-	temp_stat = NULL;
+	filedirs = NULL;
 	while (i < listsize)
 	{
 		//When a 'directory' fails to open, write error
-		if (stat(list[i], temp_stat) == -1)
-			ls_perror(list[i]);
-		else if (!stats)
-			stats = arraylist(temp_stat, listsize);
-		else
-			stats->push(stats, temp_stat);
+		if ((temp_filedir = filedir(list[i])))
+		{
+			if (!filedirs)
+				filedirs = check_malloc(arraylist(temp_filedir, listsize));
+			else
+				filedirs->push(filedirs, temp_filedir);//Check malloc here too...
+		}
 		i++;
 	}
 
 	//Pass to ls_gen
-	// ls_gen(options, stats);
+	ls_buckle(options, filedirs);
 	return (0);
 }

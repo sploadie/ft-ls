@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   del_filedir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/03 13:02:18 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 16:29:20 by tgauvrit         ###   ########.fr       */
+/*   Created: 2014/11/30 14:20:11 by tgauvrit          #+#    #+#             */
+/*   Updated: 2014/11/30 14:59:01 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ls.h"
 
-size_t	ft_strlen(char *str)
+void	del_filedir(t_filedir *filedir)
 {
-	char	*temp;
-
-	temp = str;
-	while (*temp != '\0')
-		temp++;
-	return (temp - str);
+	free(filedir->path);
+	if (filedir->stats)
+		free(filedir->stats);
+	if (filedir->dir)
+		closedir(filedir->dir);
+	free(filedir);
 }

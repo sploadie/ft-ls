@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 13:02:07 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/10 15:26:10 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/11/30 16:28:48 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct			s_list
 
 void					ft_putchar(char c);
 void					ft_putstr(char const *str);
-int						ft_strlen(char *str);
+size_t					ft_strlen(char *str);
 char					*ft_strcpy(char *dest, char *src);
 char					*ft_strncpy(char *dest, char *src, size_t n);
 char					*ft_strdup(char *src);

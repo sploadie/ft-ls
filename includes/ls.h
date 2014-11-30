@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 14:01:48 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/11/30 16:25:10 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ typedef struct stat	t_stat;
 typedef struct		s_filedir
 {
 	char			*name;
+	size_t			name_len;
+	char			*path;
 	t_stat			*stats;
 	DIR				*dir;
 }					t_filedir;
@@ -68,6 +70,7 @@ void				check_options(char *options);
 void				ft_strjoinfree(char **line, char *add);
 void				ft_sort_string_array(char **string_array, int size);
 
-t_filedir			*filedir(char *name, t_stat *stats);
+t_filedir			*filedir(char *name);
+void				del_filedir(t_filedir *filedir);
 
 #endif
