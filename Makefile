@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/11/30 14:02:10 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/11/30 18:02:34 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,12 +36,15 @@ SRC_DIR =		./srcs/
 
 SRC_COMPILED =	main.o \
 				filedir.o \
+				del_filedir.o \
 				ls_perror.o \
 				check_malloc.o \
 				isoption.o \
 				check_options.o \
 				ft_strjoinfree.o \
 				ft_sort_string_array.o
+
+COMPILED =		$(SRC_COMPILED)
 
 all: $(NAME)
 
