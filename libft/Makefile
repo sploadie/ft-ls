@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/09/09 10:54:05 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/11/09 14:00:35 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/01 17:22:46 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ FT_LIB =		lib$(FT_LIB_NAME).a
 CC =			gcc
 
 FLAGS =			-Wall -Werror -Wextra
+
+HEADER =		libft.h
 
 HEADER_DIR =	./
 
@@ -97,7 +99,7 @@ all: $(FT_LIB)
 $(FT_LIB): $(FT_COMPILED)
 	ar rc $(FT_LIB) $(FT_COMPILED)
 
-$(FT_COMPILED): %.o: $(FT_SRC_DIR)%.c
+$(FT_COMPILED): %.o: $(FT_SRC_DIR)%.c $(HEADER)
 	$(CC) -c $(FLAGS) -I $(HEADER_DIR) $< -o $@
 
 clean:

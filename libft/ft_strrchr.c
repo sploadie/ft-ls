@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/04 10:56:05 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/08 19:25:52 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/01 13:23:17 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strrchr(char *str, char c)
 
 	if (c == '\0')
 		return (str + ft_strlen(str));
-	last = '\0';
+	last = NULL;
 	i = 0;
 	while (str[i] != '\0')
 	{
