@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/11/30 18:02:34 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/01 18:18:36 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,19 +16,21 @@ CC =			gcc
 
 FLAGS =			-Wall -Werror -Wextra
 
-HEADERS =		-I ./includes/ -I $(FT_LIB_DIR) -I $(AL_LIB_DIR)
+HEADER =		ls.h
+
+HEADER_DIR =	-I ./includes/ -I $(FT_LIB_DIR) -I $(AL_LIB_DIR)
 
 LIBRARIES =		-L$(FT_LIB_DIR) -l$(FT_LIB_NAME) -L$(AL_LIB_DIR) -l$(AL_LIB_NAME)
 
 FT_LIB_NAME =	ft
 
-FT_LIB =		lib$(FT_LIB_NAME).a
+FT_LIB =		$(FT_LIB_DIR)lib$(FT_LIB_NAME).a
 
 FT_LIB_DIR =	./libft/
 
 AL_LIB_NAME =	arylst
 
-AL_LIB =		lib$(AL_LIB_NAME).a
+AL_LIB =		$(AL_LIB_DIR)lib$(AL_LIB_NAME).a
 
 AL_LIB_DIR =	./arraylist/
 
@@ -49,10 +51,10 @@ COMPILED =		$(SRC_COMPILED)
 all: $(NAME)
 
 $(NAME): $(FT_LIB) $(AL_LIB) $(SRC_COMPILED)
-	$(CC) -o $(NAME) $(FLAGS) $(LIBRARIES) $(HEADERS) $(SRC_COMPILED)
+	$(CC) -o $(NAME) $(FLAGS) $(LIBRARIES) $(HEADER_DIR) $(SRC_COMPILED)
 
-$(SRC_COMPILED): %.o: $(SRC_DIR)%.c
-	$(CC) -c $(FLAGS) $(HEADERS) -L$(FT_LIB_DIR) -l$(FT_LIB_NAME) $< -o $@
+$(SRC_COMPILED): %.o: $(SRC_DIR)%.c $(ls.h)
+	$(CC) -c $(FLAGS) $(HEADER_DIR) $< -o $@
 
 $(FT_LIB):
 	make -C $(FT_LIB_DIR);
@@ -64,6 +66,6 @@ clean:
 	-/bin/rm -f $(COMPILED)
 
 fclean: clean
-	-/bin/rm -f $(FT_LIB)
+	-/bin/rm -f $(NAME)
 
 re: fclean all
