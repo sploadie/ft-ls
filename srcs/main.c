@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 18:00:26 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/01 12:24:10 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,31 @@ void		ls_buckle(char *options, t_arraylist *filedirs)
 {
 	//For looping
 	t_arraylist		*dirs;
+	//For iterator
+	t_arlst_iter	*iter;
+	int				iter_ret;
+	t_filedir		*temp_filedir;
 
 	//Print recieved filedirs (current dir)
-	//Then, for each dir in filedirs
-	//  Print "\n[dirname]:\n"
-	//  Recurse ls_buckle with filedirs from ls_gen_filedirs
-	//  For option -r, make iter->pip = iter->pop
+	ls_print(options, filedirs);
+	//Set dir iterator
+	dirs = ls_dirs(filedirs);
+	iter = arlst_iter(dirs);
+	//For option -r, make iter->pip = iter->pop
+	if (ft_strchr(options, 'r'))
+		iter->pip = iter->pop;
+	//Then, for each dir in filedirs:
+	iter_ret = 1;
+	while (iter_ret)
+	{
+		temp_filedir = iter->pip(iter, &iter_ret);
+		//Print "\n[dirname]:\n"
+		write(1, "\n\n", 2);
+		ft_putstr(temp_filedir->name);
+		write(1, ":\n", 2);
+		//Recurse ls_buckle with filedirs from ls_gen_filedirs
+		ls_buckle(options, ls_gen_filedirs(temp_filedir->dir));
+	}
 }
 
 int			main(int argc, char **argv)
@@ -129,28 +148,34 @@ int			main(int argc, char **argv)
 	//Get filedir names
 	list = argv + i;
 	listsize = argc - i;
-	//If none skip to ls_buckle with filedirs from ls_gen_filedirs of '.'//FIXME
-
-	//Sort filedir names
-	ft_sort_string_array(list, listsize);
-
-	//Open each 'directory'
-	i = 0;
-	filedirs = NULL;
-	while (i < listsize)
+	if (!listsize)
 	{
-		//When a 'directory' fails to open, write error
-		if ((temp_filedir = filedir(list[i])))
-		{
-			if (!filedirs)
-				filedirs = check_malloc(arraylist(temp_filedir, listsize));
-			else
-				filedirs->push(filedirs, temp_filedir);//Check malloc here too...
-		}
-		i++;
+		//If none skip to ls_buckle with filedirs from ls_gen_filedirs of '.'//FIXME
 	}
+	else
+	{
+		//Sort filedir names
+		ft_sort_string_array(list, listsize);
 
-	//Pass to ls_gen
-	ls_buckle(options, filedirs);
+		//Open each 'directory'
+		i = 0;
+		filedirs = NULL;
+		while (i < listsize)
+		{
+			//When a 'directory' fails to open, write error
+			if ((temp_filedir = filedir(list[i])))
+			{
+				if (!filedirs)
+					filedirs = check_malloc(arraylist(temp_filedir, listsize));
+				else
+					filedirs->push(filedirs, temp_filedir);//Check malloc here too...
+			}
+			i++;
+		}
+	}
+	if (!ft_strchr(options, 'R'))
+		ls_print(options, filedirs);//If no -R, print and you're done!
+	else
+		ls_buckle(options, filedirs);//Otherwise, pass to ls_buckle
 	return (0);
 }
