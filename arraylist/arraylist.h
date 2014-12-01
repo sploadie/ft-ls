@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 13:02:07 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/27 12:16:55 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/01 18:01:55 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct		s_arraylist
 	void			(*resize)(struct s_arraylist *arlst, size_t buf);
 	void			(*shift)(struct s_arraylist *arlst, void *elem);
 	void			(*push)(struct s_arraylist *arlst, void *elem);
+	void			(*sort)(struct s_arraylist *arlst, int (*cmp)());
 }					t_arraylist;
 
 typedef struct		s_arlst_iter
@@ -45,6 +46,7 @@ size_t				x_arraylist_size(struct s_arraylist *arlst);
 void				x_arraylist_resize(struct s_arraylist *arlst, size_t buf);
 void				x_arraylist_shift(struct s_arraylist *arlst, void *elem);
 void				x_arraylist_push(struct s_arraylist *arlst, void *elem);
+void				x_arraylist_sort(t_arraylist *arlst, int (*cmp)());
 
 t_arlst_iter		*arlst_iter(struct s_arraylist *arlst);
 void				*x_arlst_iter_pop(struct s_arlst_iter *iter, int *ret);
