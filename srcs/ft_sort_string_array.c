@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 13:54:12 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 13:56:38 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/01 17:30:36 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,4 @@ void	ft_sort_string_array(char **string_array, int size)
 		}
 		i++;
 	}
-	return ;
 }
