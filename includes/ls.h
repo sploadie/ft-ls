@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/01 15:27:33 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/03 20:30:38 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef struct			s_filedir
 	size_t				name_len;
 	char				*path;
 	t_stat				*stats;
-	DIR					*dir;
 }						t_filedir;
 
 void					ls_perror(char *s);
@@ -74,5 +73,9 @@ void					ft_sort_string_array(char **string_array, int size);
 
 t_filedir				*filedir(char *name);
 void					del_filedir(t_filedir *filedir);
+
+int						isdots(char *name);
+
+void					ls_buckle(char *options, t_arraylist *filedirs);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/12/01 18:18:36 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/03 20:01:30 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,13 @@ LIBRARIES =		-L$(FT_LIB_DIR) -l$(FT_LIB_NAME) -L$(AL_LIB_DIR) -l$(AL_LIB_NAME)
 
 FT_LIB_NAME =	ft
 
-FT_LIB =		$(FT_LIB_DIR)lib$(FT_LIB_NAME).a
+FT_LIB =		lib$(FT_LIB_NAME).a
 
 FT_LIB_DIR =	./libft/
 
 AL_LIB_NAME =	arylst
 
-AL_LIB =		$(AL_LIB_DIR)lib$(AL_LIB_NAME).a
+AL_LIB =		lib$(AL_LIB_NAME).a
 
 AL_LIB_DIR =	./arraylist/
 
@@ -57,10 +57,10 @@ $(SRC_COMPILED): %.o: $(SRC_DIR)%.c $(ls.h)
 	$(CC) -c $(FLAGS) $(HEADER_DIR) $< -o $@
 
 $(FT_LIB):
-	make -C $(FT_LIB_DIR);
+	@make -C $(FT_LIB_DIR);
 
 $(AL_LIB):
-	make -C $(AL_LIB_DIR);
+	@make -C $(AL_LIB_DIR);
 
 clean:
 	-/bin/rm -f $(COMPILED)

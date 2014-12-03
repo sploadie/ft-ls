@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/09/09 10:54:05 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/12/01 18:08:36 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/03 20:01:42 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CC =			gcc
 
 FLAGS =			-Wall -Werror -Wextra
 
-FT_LIB =		$(FT_LIB_DIR)libft.a
+FT_LIB =		libft.a
 
 FT_LIB_DIR =	./../libft/
 
@@ -36,6 +36,7 @@ AL_COMPILED =	arraylist.o \
 				x_arraylist_push.o \
 				x_arraylist_shift.o \
 				x_arraylist_sort.o \
+				x_arraylist_del.o \
 				arlst_iter.o \
 				x_arlst_iter_pop.o \
 				x_arlst_iter_pip.o
@@ -51,7 +52,7 @@ $(AL_COMPILED): %.o: $(AL_SRC_DIR)%.c $(AL_HEADER)
 	$(CC) -c $(FLAGS) $(HEADER_DIRS) $< -o $@
 
 $(FT_LIB):
-	make -C $(FT_LIB_DIR);
+	@make -C $(FT_LIB_DIR);
 
 clean:
 	-/bin/rm -f $(COMPILED)
