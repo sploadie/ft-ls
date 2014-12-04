@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/12/03 20:01:30 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/04 16:11:21 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,7 @@ all: $(NAME)
 $(NAME): $(FT_LIB) $(AL_LIB) $(SRC_COMPILED)
 	$(CC) -o $(NAME) $(FLAGS) $(LIBRARIES) $(HEADER_DIR) $(SRC_COMPILED)
 
-$(SRC_COMPILED): %.o: $(SRC_DIR)%.c $(ls.h)
+$(SRC_COMPILED): %.o: $(SRC_DIR)%.c $(HEADER)
 	$(CC) -c $(FLAGS) $(HEADER_DIR) $< -o $@
 
 $(FT_LIB):
