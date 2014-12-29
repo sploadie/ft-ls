@@ -18,8 +18,8 @@ char	*ft_strnstr(char *str, char *to_find, size_t n)
 
 	if (to_find[0] == '\0')
 		return (str);
-	if (str == '\0' || n < 1)
-		return ('\0');
+	if (str == NULL || n < 1)
+		return (NULL);
 	i = 0;
 	while (i < n && to_find[i] == str[i] && str[i] != '\0')
 	{
@@ -28,6 +28,6 @@ char	*ft_strnstr(char *str, char *to_find, size_t n)
 			return (str);
 	}
 	if (str[i] == '\0' || i == n)
-		return ('\0');
+		return (NULL);
 	return (ft_strnstr(str + 1, to_find, n - 1));
 }

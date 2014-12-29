@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/03 20:26:28 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/29 09:27:56 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,95 @@ int		show_entry(char *options, char *name)
 	return (0);
 }
 
+// char *uid_to_name( uid_t uid )
+// {
+// 	struct	passwd *pw_ptr;
+
+// 	if ((pw_ptr = getpwuid(uid)) == NULL)
+// 		return (ft_itoa(uid));
+// 	return (pw_ptr->pw_name);
+// }
+
+// char *gid_to_name( gid_t gid )
+// {
+// 	struct	group *grp_ptr;
+
+// 	if ((grp_ptr = getgrgid(gid)) == NULL)
+// 		return (ft_itoa(gid));
+// 	return (grp_ptr->gr_name);
+// }
+
+void	ls_print_permissions(int mode)
+{
+	char		str[11];
+
+	ft_strcpy(str, "----------");//    Default=no perms
+
+	if (S_ISDIR(mode))	str[0] = 'd';//Directory?
+	if (S_ISCHR(mode))	str[0] = 'c';//Char devices
+	if (S_ISBLK(mode))	str[0] = 'b';//Block device
+
+	if (mode & S_IRUSR)	str[1] = 'r';//3 bits for user
+	if (mode & S_IWUSR)	str[2] = 'w';
+	if (mode & S_IXUSR)	str[3] = 'x';
+
+	if (mode & S_IRGRP)	str[4] = 'r';//3 bits for group
+	if (mode & S_IWGRP)	str[5] = 'w';
+	if (mode & S_IXGRP)	str[6] = 'x';
+
+	if (mode & S_IROTH)	str[7] = 'r';//3 bits for other
+	if (mode & S_IWOTH)	str[8] = 'w';
+	if (mode & S_IXOTH)	str[9] = 'x';
+
+    ft_putstr(str);
+}
+
+void	ls_print_time(time_t *clock)
+{
+	write(1, 4+ctime(clock), 7);
+	if (*clock > time(NULL) - (2592000 * 6))
+		write(1, 11+ctime(clock), 5);
+	else
+		write(1, 20+ctime(clock), 4);
+}
+
+void	ls_print_spaced(char *str, size_t space)
+{
+	size_t	size;
+
+	size = ft_strlen(str);
+	while (space > size)
+	{
+		write(1, " ", 1);
+		space--;
+	}
+	write(1, str, space);
+}
+
+void	ls_print_l(t_filedir *filedir)
+{
+	ls_print_permissions(filedir->stats->st_mode);
+	if (listxattr(filedir->path, NULL, 0, 0))
+		ft_putchar('@');
+	else
+		ft_putchar(' ');//Add @ and + thing here! Still need '+' !
+	write(1, " ", 1);
+	ls_print_spaced(ft_itoa(filedir->stats->st_nlink), 3);
+	write(1, " ", 1);
+	ft_putstr(uid_to_name(filedir->stats->st_uid));
+	write(1, "  ", 2);
+	ft_putstr(gid_to_name(filedir->stats->st_gid));
+	write(1, "  ", 2);
+	ls_print_spaced(ft_itoa(filedir->stats->st_size), 5);
+	// write(1, "  ", 1);//FIXME//DEBUG
+	// ls_print_spaced(ft_itoa(filedir->stats->st_blocks), 5);//FIXME//DEBUG
+	write(1, " ", 1);
+	ls_print_time(&filedir->stats->st_mtime);
+	write(1, " ", 1);
+	ft_putstr(filedir->name);
+	ft_putchar('\n');
+}
+
 void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 {
 	//For iterator
@@ -197,52 +286,16 @@ void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 		temp_filedir = iter->pip(iter, &iter_ret);
 		//Check options for print or nay;
 		if (show_entry(options, temp_filedir->name))
-			ft_putendl(temp_filedir->name);
+		{
+			if (ft_strchr(options, 'l'))
+				ls_print_l(temp_filedir);
+			else
+				ft_putendl(temp_filedir->name);
+		}
 
 	}
 	free(iter);
 }
-
-// //ORIGINAL
-// void		ls_buckle(char *options, t_arraylist *filedirs)
-// {
-// 	//For looping
-// 	t_arraylist		*dirs;
-// 	//For iterator
-// 	t_arlst_iter	*iter;
-// 	int				iter_ret;
-// 	t_filedir		*temp_filedir;
-
-// 	//If no files where found in this dir, do nothing~
-// 	if (!filedirs)
-// 		return ;
-// 	//Print recieved filedirs (current dir)
-// 	ls_print(options, filedirs);
-// 	//Set dir iterator
-// 	dirs = ls_dirs(filedirs);
-// 	iter = arlst_iter(dirs);
-// 	//For option -r, make iter->pip = iter->pop
-// 	if (ft_strchr(options, 'r'))
-// 		iter->pip = iter->pop;
-// 	//Then, for each dir in filedirs:
-// 	iter_ret = 1;
-// 	while (iter_ret)
-// 	{
-// 		temp_filedir = iter->pip(iter, &iter_ret);
-// 		//Skip '.' and '..'
-// 		if (isdots(temp_filedir->name))
-// 			continue;
-// 		//Print "\n[dirname]:\n"
-// 		write(1, "\n", 1);
-// 		ft_putstr(temp_filedir->name);
-// 		write(1, ":\n", 2);
-// 		//Recurse ls_buckle with filedirs from ls_gen_filedirs
-// 		ls_buckle(options, ls_gen_filedirs(temp_filedir));
-// 	}
-// 	free(iter);
-	// del_filedir_arlst(filedirs);
-// 	// del_arraylist(dirs);//MAKE THIS//FIXME
-// }
 
 void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 {
@@ -403,3 +456,44 @@ int			main(int argc, char **argv)
 	// del_filedir_arlst(filedirs);
 	return (0);
 }
+
+// //ORIGINAL
+// void		ls_buckle(char *options, t_arraylist *filedirs)
+// {
+// 	//For looping
+// 	t_arraylist		*dirs;
+// 	//For iterator
+// 	t_arlst_iter	*iter;
+// 	int				iter_ret;
+// 	t_filedir		*temp_filedir;
+
+// 	//If no files where found in this dir, do nothing~
+// 	if (!filedirs)
+// 		return ;
+// 	//Print recieved filedirs (current dir)
+// 	ls_print(options, filedirs);
+// 	//Set dir iterator
+// 	dirs = ls_dirs(filedirs);
+// 	iter = arlst_iter(dirs);
+// 	//For option -r, make iter->pip = iter->pop
+// 	if (ft_strchr(options, 'r'))
+// 		iter->pip = iter->pop;
+// 	//Then, for each dir in filedirs:
+// 	iter_ret = 1;
+// 	while (iter_ret)
+// 	{
+// 		temp_filedir = iter->pip(iter, &iter_ret);
+// 		//Skip '.' and '..'
+// 		if (isdots(temp_filedir->name))
+// 			continue;
+// 		//Print "\n[dirname]:\n"
+// 		write(1, "\n", 1);
+// 		ft_putstr(temp_filedir->name);
+// 		write(1, ":\n", 2);
+// 		//Recurse ls_buckle with filedirs from ls_gen_filedirs
+// 		ls_buckle(options, ls_gen_filedirs(temp_filedir));
+// 	}
+// 	free(iter);
+	// del_filedir_arlst(filedirs);
+// 	// del_arraylist(dirs);//MAKE THIS//FIXME
+// }

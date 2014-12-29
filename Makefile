@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/12/04 16:11:21 by tgauvrit         ###   ########.fr        #
+#    Updated: 2014/12/29 09:13:51 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC =			gcc
 
 FLAGS =			-Wall -Werror -Wextra
 
-HEADER =		ls.h
+HEADER =		./includes/ls.h
 
 HEADER_DIR =	-I ./includes/ -I $(FT_LIB_DIR) -I $(AL_LIB_DIR)
 
@@ -44,7 +44,8 @@ SRC_COMPILED =	main.o \
 				isoption.o \
 				check_options.o \
 				ft_strjoinfree.o \
-				ft_sort_string_array.o
+				ft_sort_string_array.o \
+				id_to_name.o
 
 COMPILED =		$(SRC_COMPILED)
 

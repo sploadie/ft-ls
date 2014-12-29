@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   id_to_name.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/09/02 22:16:02 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/08 19:25:48 by tgauvrit         ###   ########.fr       */
+/*   Created: 2014/12/29 09:11:28 by tgauvrit          #+#    #+#             */
+/*   Updated: 2014/12/29 09:13:27 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ls.h"
 
-char	*ft_strstr(char *str, char *to_find)
+char	*uid_to_name(uid_t uid)
 {
-	int	i;
+	struct passwd	*pw_ptr;
 
-	if (to_find[0] == '\0')
-		return (str);
-	if (str == NULL)
-		return (NULL);
-	i = 0;
-	while (to_find[i] == str[i] && str[i] != '\0')
-	{
-		i++;
-		if (to_find[i] == '\0')
-			return (str);
-	}
-	if (str[i] == '\0')
-		return (NULL);
-	return (ft_strstr(str + 1, to_find));
+	if ((pw_ptr = getpwuid(uid)) == NULL)
+		return (ft_itoa(uid));
+	return (pw_ptr->pw_name);
+}
+
+char	*gid_to_name(gid_t gid)
+{
+	struct group	*grp_ptr;
+
+	if ((grp_ptr = getgrgid(gid)) == NULL)
+		return (ft_itoa(gid));
+	return (grp_ptr->gr_name);
 }
