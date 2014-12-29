@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   del_filedir.c                                      :+:      :+:    :+:   */
+/*   isdots.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/30 14:20:11 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 16:14:49 by tgauvrit         ###   ########.fr       */
+/*   Created: 2014/12/29 11:56:53 by tgauvrit          #+#    #+#             */
+/*   Updated: 2014/12/29 11:58:01 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	del_filedir(t_filedir *filedir)
+int		isdots(char *name)
 {
-	free(filedir->path);
-	if (filedir->stats)
-		free(filedir->stats);
-	if (filedir->link)
-		free(filedir->link);
-	free(filedir);
+	if (!ft_strcmp(".", name) || !ft_strcmp("..", name))
+		return (1);
+	return (0);
 }

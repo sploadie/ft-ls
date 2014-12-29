@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 09:12:46 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/29 16:15:17 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,17 @@ typedef struct			s_filedir
 	size_t				name_len;
 	char				*path;
 	t_stat				*stats;
+	char				*link;
 }						t_filedir;
+
+typedef struct			s_l_info
+{
+	unsigned int		block_mem_total;
+	unsigned int		link_spacing;
+	unsigned int		user_spacing;
+	unsigned int		group_spacing;
+	unsigned int		size_spacing;
+}						t_l_info;
 
 void					ls_perror(char *s);
 void					*check_malloc(void *ret);
@@ -77,10 +87,15 @@ t_filedir				*filedir(char *name);
 void					del_filedir(t_filedir *filedir);
 
 int						isdots(char *name);
+int						show_entry(char *options, char *name);
 
 void					ls_buckle(char *options, t_arraylist *filedirs);
 
-char					*uid_to_name( uid_t uid );
-char					*gid_to_name( gid_t gid );
+void					ls_print_l(t_filedir *filedir);
+void					ls_l_prepare(char *options, t_arraylist *filedirs);
+t_l_info				*get_set_l_info(t_l_info *info);
+
+char					*uid_to_name(uid_t uid);
+char					*gid_to_name(gid_t gid);
 
 #endif

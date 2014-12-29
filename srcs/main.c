@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 09:27:56 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/29 19:49:13 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ void		del_filedir_arlst(t_arraylist *filedirs)
 
 int			ls_filedir_cmp(t_filedir *fd1, t_filedir *fd2)
 {
+	if (!fd1 || !fd2)//FIXME//DEBUG
+		ft_putendl("BOOM!");//FIXME//DEBUG
+	ft_putstr(fd1->name);//FIXME//DEBUG
+	ft_putstr(" =?= ");//FIXME//DEBUG
+	ft_putstr(fd2->name);//FIXME//DEBUG
+	ft_putendl(" <>");//FIXME//DEBUG
 	return (ft_strcmp(fd1->name, fd2->name));
 }
 
@@ -125,13 +131,6 @@ t_arraylist	*ls_files(t_arraylist *filedirs)
 	return (files);
 }
 
-int		isdots(char *name)
-{
-	if (!ft_strcmp(".", name) || !ft_strcmp("..", name))
-		return (1);
-	return (0);
-}
-
 t_arraylist	*ls_gen_filedirs(t_filedir *origin_filedir)
 {
 	t_arraylist		*filedirs;
@@ -144,126 +143,25 @@ t_arraylist	*ls_gen_filedirs(t_filedir *origin_filedir)
 	root = ft_strjoin(origin_filedir->path, "/");
 	//Get filedirs
 	filedirs = NULL;
-	while ((dir_entry = readdir(curr_dir)))
+	while ((dir_entry = readdir(curr_dir)) != NULL)
 	{
-		// ft_putendl(dir_entry->d_name);//FIXME//DEBUG
+		ft_putendl(dir_entry->d_name);//FIXME//DEBUG
 		full_path = ft_strjoin(root, dir_entry->d_name);
 		if (!filedirs)
 			filedirs = check_malloc(arraylist(filedir(full_path), DIR_BUF));
 		else
 			filedirs->push(filedirs, filedir(full_path));//Check malloc here too...
+		ft_putendl("(X)(.)(.)(.)");//FIXME//DEBUG
 		free(full_path);
+		ft_putendl("(.)(X)(.)(.)");//FIXME//DEBUG
 	}
 	closedir(curr_dir);
+	ft_putendl("(.)(.)(X)(.)");//FIXME//DEBUG
 	filedirs->sort(filedirs, ls_filedir_cmp);
+	ft_putendl("(.)(.)(.)(X)");//FIXME//DEBUG
 	free(root);
-	// ft_putendl("=========================");//FIXME//DEBUG
+	ft_putendl("=========================");//FIXME//DEBUG
 	return (filedirs);
-}
-
-// void	ls_l_lines(t_arraylist *filedirs)
-// {
-// 	;
-// }
-
-int		show_entry(char *options, char *name)
-{
-	if (*name != '.')
-		return (1);
-	if (ft_strchr(options, 'a'))
-		return (1);
-	if (ft_strchr(options, 'A') && !isdots(name))
-		return (1);
-	return (0);
-}
-
-// char *uid_to_name( uid_t uid )
-// {
-// 	struct	passwd *pw_ptr;
-
-// 	if ((pw_ptr = getpwuid(uid)) == NULL)
-// 		return (ft_itoa(uid));
-// 	return (pw_ptr->pw_name);
-// }
-
-// char *gid_to_name( gid_t gid )
-// {
-// 	struct	group *grp_ptr;
-
-// 	if ((grp_ptr = getgrgid(gid)) == NULL)
-// 		return (ft_itoa(gid));
-// 	return (grp_ptr->gr_name);
-// }
-
-void	ls_print_permissions(int mode)
-{
-	char		str[11];
-
-	ft_strcpy(str, "----------");//    Default=no perms
-
-	if (S_ISDIR(mode))	str[0] = 'd';//Directory?
-	if (S_ISCHR(mode))	str[0] = 'c';//Char devices
-	if (S_ISBLK(mode))	str[0] = 'b';//Block device
-
-	if (mode & S_IRUSR)	str[1] = 'r';//3 bits for user
-	if (mode & S_IWUSR)	str[2] = 'w';
-	if (mode & S_IXUSR)	str[3] = 'x';
-
-	if (mode & S_IRGRP)	str[4] = 'r';//3 bits for group
-	if (mode & S_IWGRP)	str[5] = 'w';
-	if (mode & S_IXGRP)	str[6] = 'x';
-
-	if (mode & S_IROTH)	str[7] = 'r';//3 bits for other
-	if (mode & S_IWOTH)	str[8] = 'w';
-	if (mode & S_IXOTH)	str[9] = 'x';
-
-    ft_putstr(str);
-}
-
-void	ls_print_time(time_t *clock)
-{
-	write(1, 4+ctime(clock), 7);
-	if (*clock > time(NULL) - (2592000 * 6))
-		write(1, 11+ctime(clock), 5);
-	else
-		write(1, 20+ctime(clock), 4);
-}
-
-void	ls_print_spaced(char *str, size_t space)
-{
-	size_t	size;
-
-	size = ft_strlen(str);
-	while (space > size)
-	{
-		write(1, " ", 1);
-		space--;
-	}
-	write(1, str, space);
-}
-
-void	ls_print_l(t_filedir *filedir)
-{
-	ls_print_permissions(filedir->stats->st_mode);
-	if (listxattr(filedir->path, NULL, 0, 0))
-		ft_putchar('@');
-	else
-		ft_putchar(' ');//Add @ and + thing here! Still need '+' !
-	write(1, " ", 1);
-	ls_print_spaced(ft_itoa(filedir->stats->st_nlink), 3);
-	write(1, " ", 1);
-	ft_putstr(uid_to_name(filedir->stats->st_uid));
-	write(1, "  ", 2);
-	ft_putstr(gid_to_name(filedir->stats->st_gid));
-	write(1, "  ", 2);
-	ls_print_spaced(ft_itoa(filedir->stats->st_size), 5);
-	// write(1, "  ", 1);//FIXME//DEBUG
-	// ls_print_spaced(ft_itoa(filedir->stats->st_blocks), 5);//FIXME//DEBUG
-	write(1, " ", 1);
-	ls_print_time(&filedir->stats->st_mtime);
-	write(1, " ", 1);
-	ft_putstr(filedir->name);
-	ft_putchar('\n');
 }
 
 void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
@@ -273,8 +171,11 @@ void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 	int				iter_ret;
 	t_filedir		*temp_filedir;
 
+	// ft_putendl("@-->");//FIXME//DEBUG
 	if (!filedirs)
 		return ;
+	if (ft_strchr(options, 'l'))
+		ls_l_prepare(options, filedirs);
 	iter = arlst_iter(filedirs);
 	//For option -r, make iter->pip = iter->pop
 	if (ft_strchr(options, 'r'))
@@ -292,9 +193,11 @@ void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 			else
 				ft_putendl(temp_filedir->name);
 		}
-
 	}
 	free(iter);
+	if (ft_strchr(options, 'l'))
+		free(get_set_l_info(NULL));
+	// ft_putendl("<--@");//FIXME//DEBUG
 }
 
 void		ls_loop(char *options, t_arraylist *filedirs, char dots)
@@ -306,6 +209,7 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 	int				iter_ret;
 	t_filedir		*temp_filedir;
 
+	// ft_putendl("@-->");//FIXME//DEBUG
 	//If no files where found in this dir, do nothing~
 	if (!filedirs)
 		return ;
@@ -343,10 +247,12 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 	}
 	free(iter);
 	del_filedir_arlst(filedirs);
+	// ft_putendl("<--@");//FIXME//DEBUG
 }
 
 void		ls_buckle(char *options, t_arraylist *filedirs)
 {
+	// ft_putendl("$-->");//FIXME//DEBUG
 	//If no files where found in this dir, do nothing~
 	if (!filedirs)
 		return ;
@@ -355,6 +261,7 @@ void		ls_buckle(char *options, t_arraylist *filedirs)
 	//Send to loop to loop through dirs
 	if (ft_strchr(options, 'R'))
 		ls_loop(options, filedirs, 0);
+	// ft_putendl("<--$");//FIXME//DEBUG
 }
 
 void		ls_first(char *options, t_arraylist *filedirs)
