@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 13:54:12 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/11/30 13:54:58 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/30 19:12:01 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 void	ls_perror(char *s)
 {
-	ft_putstr_fd("ft_ls: ", 2);
+	ft_putstr_fd("ls: ", 2);
 	perror(s);
 }

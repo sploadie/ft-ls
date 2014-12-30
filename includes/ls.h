@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 16:15:17 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/30 18:46:23 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # include "libft.h"
 # include "arraylist.h"
 
-# define OPTIONS "ARalrt"
+# define OPTIONS "1ARalrt"
 # define DIR_BUF 5
 
 /*

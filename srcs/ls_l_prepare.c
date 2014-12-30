@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:47:54 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 13:35:10 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/30 17:39:30 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,13 @@ void				ls_l_prepare(char *options, t_arraylist *filedirs)
 	t_filedir		*temp_filedir;
 	unsigned int	file_count;
 
-	neoinfo = check_malloc(malloc(sizeof(t_l_info)));
+	if (!get_set_l_info(NULL))
+	{
+		neoinfo = check_malloc(malloc(sizeof(t_l_info)));
+		get_set_l_info(neoinfo);
+	}
+	else
+		neoinfo = get_set_l_info(NULL);
 	ft_bzero(neoinfo, sizeof(t_l_info));
 	file_count = 0;
 	iter = arlst_iter(filedirs);
@@ -66,11 +72,12 @@ void				ls_l_prepare(char *options, t_arraylist *filedirs)
 			extract_l_info(neoinfo, temp_filedir);
 	}
 	free(iter);
-	get_set_l_info(neoinfo);
-	if (neoinfo->block_mem_total || file_count)
+	if ((neoinfo->block_mem_total || file_count) && !ft_strchr(options, 'F'))
 	{
 		write(1, "total ", 6);
 		ft_putnbr(neoinfo->block_mem_total);
 		write(1, "\n", 1);
 	}
+	if (ft_strchr(options, 'F'))
+		*(ft_strchr(options, 'F')) = 'l';
 }

@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/29 19:49:13 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/30 19:23:59 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,36 @@ void		del_filedir_arlst(t_arraylist *filedirs)
 	//For iterator
 	t_arlst_iter	*iter;
 	int				iter_ret;
+	t_filedir		*temp_filedir;
 
+	// ft_putendl("Hm...");//FIXME//DEBUG//GDB
+	// ft_putnbr(filedirs->size(filedirs));//FIXME//DEBUG//GDB
 	iter = arlst_iter(filedirs);
 	iter_ret = 1;
 	while (iter_ret > 0)
 	{
-		del_filedir(iter->pop(iter, &iter_ret));
+		temp_filedir = iter->pop(iter, &iter_ret);
+		if (temp_filedir != NULL)
+		{
+			// ft_putstr("Deleting: ");//FIXME//DEBUG//GDB
+			// ft_putendl(temp_filedir->name);//FIXME//DEBUG//GDB
+			del_filedir(temp_filedir);
+		}
 	}
 	free(iter);
+	// ft_putendl("Poof.");//FIXME//DEBUG//GDB
 	filedirs->del(filedirs);
+	// ft_putendl("Nope.");//FIXME//DEBUG//GDB
 }
 
 int			ls_filedir_cmp(t_filedir *fd1, t_filedir *fd2)
 {
-	if (!fd1 || !fd2)//FIXME//DEBUG
-		ft_putendl("BOOM!");//FIXME//DEBUG
-	ft_putstr(fd1->name);//FIXME//DEBUG
-	ft_putstr(" =?= ");//FIXME//DEBUG
-	ft_putstr(fd2->name);//FIXME//DEBUG
-	ft_putendl(" <>");//FIXME//DEBUG
+	// if (!fd1 || !fd2)//FIXME//DEBUG
+	// 	ft_putendl("BOOM!");//FIXME//DEBUG
+	// ft_putstr(fd1->path);//FIXME//DEBUG
+	// ft_putstr(" =?= ");//FIXME//DEBUG
+	// write(1, fd2->name, 9);//FIXME//DEBUG//GDB
+	// ft_putendl(" <>");//FIXME//DEBUG//GDB
 	return (ft_strcmp(fd1->name, fd2->name));
 }
 
@@ -90,7 +101,7 @@ t_arraylist	*ls_dirs(t_arraylist *filedirs)
 		// {//FIXME//DEBUG
 			// ft_putendl(" should be dir!");//FIXME//DEBUG
 		// }//FIXME//DEBUG
-		if (S_ISDIR(temp_filedir->stats->st_mode))
+		if (S_ISDIR(temp_filedir->stats->st_mode) && !temp_filedir->link)
 		{
 			if (!dirs)
 				dirs = check_malloc(arraylist(temp_filedir, filedirs->size(filedirs)));
@@ -140,27 +151,32 @@ t_arraylist	*ls_gen_filedirs(t_filedir *origin_filedir)
 	char			*full_path;
 
 	curr_dir = opendir(origin_filedir->path);
+	if (!curr_dir)
+	{
+		ls_perror(origin_filedir->name);
+		return (NULL);
+	}
 	root = ft_strjoin(origin_filedir->path, "/");
 	//Get filedirs
 	filedirs = NULL;
 	while ((dir_entry = readdir(curr_dir)) != NULL)
 	{
-		ft_putendl(dir_entry->d_name);//FIXME//DEBUG
+		// ft_putendl(dir_entry->d_name);//FIXME//DEBUG//GDB
 		full_path = ft_strjoin(root, dir_entry->d_name);
 		if (!filedirs)
 			filedirs = check_malloc(arraylist(filedir(full_path), DIR_BUF));
 		else
 			filedirs->push(filedirs, filedir(full_path));//Check malloc here too...
-		ft_putendl("(X)(.)(.)(.)");//FIXME//DEBUG
+		// ft_putendl("(X)(.)(.)(.)");//FIXME//DEBUG//GDB
 		free(full_path);
-		ft_putendl("(.)(X)(.)(.)");//FIXME//DEBUG
+		// ft_putendl("(.)(X)(.)(.)");//FIXME//DEBUG//GDB
 	}
 	closedir(curr_dir);
-	ft_putendl("(.)(.)(X)(.)");//FIXME//DEBUG
+	// ft_putendl("(.)(.)(X)(.)");//FIXME//DEBUG//GDB
 	filedirs->sort(filedirs, ls_filedir_cmp);
-	ft_putendl("(.)(.)(.)(X)");//FIXME//DEBUG
+	// ft_putendl("(.)(.)(.)(X)");//FIXME//DEBUG//GDB
 	free(root);
-	ft_putendl("=========================");//FIXME//DEBUG
+	// ft_putendl("=========================");//FIXME//DEBUG//GDB
 	return (filedirs);
 }
 
@@ -174,7 +190,7 @@ void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 	// ft_putendl("@-->");//FIXME//DEBUG
 	if (!filedirs)
 		return ;
-	if (ft_strchr(options, 'l'))
+	if (ft_strchr(options, 'l') || ft_strchr(options, 'F'))
 		ls_l_prepare(options, filedirs);
 	iter = arlst_iter(filedirs);
 	//For option -r, make iter->pip = iter->pop
@@ -195,8 +211,6 @@ void	ls_print(char *options, t_arraylist *filedirs)//man 4 tty
 		}
 	}
 	free(iter);
-	if (ft_strchr(options, 'l'))
-		free(get_set_l_info(NULL));
 	// ft_putendl("<--@");//FIXME//DEBUG
 }
 
@@ -218,7 +232,7 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 	//No dirs, no iterate!
 	if (!dirs)
 	{
-		ft_putendl("No dirs!");//FIXME//DEBUG
+		// ft_putendl("No dirs!");//FIXME//DEBUG//GDB
 		return ;
 	}
 	iter = arlst_iter(dirs);
@@ -236,7 +250,10 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 		if (show_entry(options, temp_filedir->name) || isdots(temp_filedir->name))
 		{
 			//Print "\n[dirname]:\n"
-			write(1, "\n", 1);
+			if (!ft_strchr(options, '^'))
+				write(1, "\n", 1);
+			else
+				*(ft_strchr(options, '^')) = '\0';
 			ft_putstr(temp_filedir->path);
 			write(1, ":\n", 2);
 			//Recurse ls_buckle with filedirs from ls_gen_filedirs
@@ -246,7 +263,10 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 			ls_loop(options, ls_gen_filedirs(temp_filedir), 0);
 	}
 	free(iter);
-	del_filedir_arlst(filedirs);
+	// ft_putendl("Dirs!");//FIXME//DEBUG//GDB
+	dirs->del(dirs);
+	// ft_putendl("Filedirs!");//FIXME//DEBUG//GDB
+	del_filedir_arlst(filedirs);//THIS NEEDS TO BE FIXED!!!
 	// ft_putendl("<--@");//FIXME//DEBUG
 }
 
@@ -267,10 +287,18 @@ void		ls_buckle(char *options, t_arraylist *filedirs)
 void		ls_first(char *options, t_arraylist *filedirs)
 {
 	t_arraylist	*files;
+	char		*do_l;
 
 	files = ls_files(filedirs);
-	ls_print(options, files);
-	del_filedir_arlst(files);
+	if (files)
+	{
+		do_l = ft_strchr(options, 'l');
+		if (do_l)
+			*do_l = 'F';
+		ls_print(options, files);
+		files->del(files);
+	}
+	ft_strjoinfree(&options, "^");
 	ls_loop(options, filedirs, 1);
 }
 
@@ -287,6 +315,10 @@ int			main(int argc, char **argv)
 	t_arraylist		*filedirs;
 
 	// ft_putendl(argv[0]);//FIXME//DEBUG
+	// time_t	six_months_ago;//FIXME//DEBUG
+	// six_months_ago = time(NULL) - ((2599000 + 43200 - 15000) * 6);//FIXME//DEBUG
+	// write(1, ctime(&six_months_ago), 25);//FIXME//DEBUG
+	// write(1, "\n", 1);//FIXME//DEBUG
 	// if (opendir("./my_ls_test/f1"))//FIXME//DEBUG
 	// 	ft_putstr_fd("You!", 2);//FIXME//DEBUG
 	// ft_putstr_fd(readdir(opendir("./.git/refs/heads"))->d_name, 2);//FIXME//DEBUG
@@ -298,6 +330,9 @@ int			main(int argc, char **argv)
 	while (i < argc && isoption(argv[i]))
 		ft_strjoinfree(&options, argv[i++] + 1);
 
+	if (i < argc && ft_strcmp(argv[i], "--") == 0)
+		i++;
+
 	// ft_putchar('@');//FIXME//DEBUG
 	//Check if options are valid
 	check_options(options);
@@ -306,14 +341,30 @@ int			main(int argc, char **argv)
 	//Get filedir names
 	list = argv + i;
 	listsize = argc - i;
-	if (listsize < 2)
+	if (listsize < 1)
 	{
 		// ft_putchar('$');//FIXME//DEBUG
 		//If none skip to ls_buckle with filedirs from ls_gen_filedirs of '.'
-		if (listsize)
-			temp_filedir = filedir(*list);
+		temp_filedir = filedir(".");
+		//Bad filename? End of the line.
+		if (!temp_filedir)
+			return (0);
+		// ft_putchar('$');//FIXME//DEBUG
+		filedirs = ls_gen_filedirs(temp_filedir);
+		// ft_putchar('$');//FIXME//DEBUG 
+		//Delete temporary filedir
+		del_filedir(temp_filedir);
+		//Move on
+		if (ft_strchr(options, 'R'))
+			ls_buckle(options, filedirs);
 		else
-			temp_filedir = filedir(".");
+			ls_print(options, filedirs);
+	}
+	else if (listsize == 1)
+	{
+		// ft_putchar('$');//FIXME//DEBUG
+		//If none skip to ls_buckle with filedirs from ls_gen_filedirs of '.'
+		temp_filedir = filedir(*list);
 		//Bad filename? End of the line.
 		if (!temp_filedir)
 			return (0);
@@ -341,7 +392,7 @@ int			main(int argc, char **argv)
 		while (i < listsize)
 		{
 			//When a 'directory' fails to open, write error
-			if ((temp_filedir = filedir(list[i])))
+			if ((temp_filedir = filedir(list[i])) != NULL)
 			{
 				if (!filedirs)
 					filedirs = check_malloc(arraylist(temp_filedir, listsize));
@@ -351,7 +402,8 @@ int			main(int argc, char **argv)
 			i++;
 		}
 		//Move on
-		ls_first(options, filedirs);
+		if (filedirs != NULL)
+			ls_first(options, filedirs);
 	}
 	// ft_putchar('@');//FIXME//DEBUG
 
