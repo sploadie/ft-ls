@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/30 19:23:59 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/31 20:01:49 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,21 @@ int			ls_filedir_cmp(t_filedir *fd1, t_filedir *fd2)
 	return (ft_strcmp(fd1->name, fd2->name));
 }
 
-t_arraylist	*ls_dirs(t_arraylist *filedirs)
+int			ls_filedir_t_cmp(t_filedir *fd1, t_filedir *fd2)
+{
+	if (fd1->stats->st_mtime < fd2->stats->st_mtime)
+		return (1);
+	else if (fd1->stats->st_mtime == fd2->stats->st_mtime)
+		return (ft_strcmp(fd1->name, fd2->name));
+	else
+		return (0);
+}
+
+t_arraylist	*ls_dirs(char *options, t_arraylist *filedirs)
 {
 	t_arraylist		*dirs;
 	//For iterator
+	DIR				*temp_dir;
 	t_arlst_iter	*iter;
 	int				iter_ret;
 	t_filedir		*temp_filedir;
@@ -101,13 +112,19 @@ t_arraylist	*ls_dirs(t_arraylist *filedirs)
 		// {//FIXME//DEBUG
 			// ft_putendl(" should be dir!");//FIXME//DEBUG
 		// }//FIXME//DEBUG
-		if (S_ISDIR(temp_filedir->stats->st_mode) && !temp_filedir->link)
+		// (void)options;
+		if (!S_ISDIR(temp_filedir->stats->st_mode))
 		{
-			if (!dirs)
-				dirs = check_malloc(arraylist(temp_filedir, filedirs->size(filedirs)));
-			else
-				dirs->push(dirs, temp_filedir);//Should check malloc here too...
+			if (!(temp_dir = opendir(temp_filedir->path)))
+				continue;
+			closedir(temp_dir);
+			if (ft_strchr(options, 'l'))
+				continue;
 		}
+		if (!dirs)
+			dirs = check_malloc(arraylist(temp_filedir, filedirs->size(filedirs)));
+		else
+			dirs->push(dirs, temp_filedir);//Should check malloc here too...
 	}
 	free(iter);
 	//Return collected directories
@@ -118,6 +135,7 @@ t_arraylist	*ls_files(t_arraylist *filedirs)
 {
 	t_arraylist		*files;
 	//For iterator
+	DIR				*temp_dir;
 	t_arlst_iter	*iter;
 	int				iter_ret;
 	t_filedir		*temp_filedir;
@@ -129,20 +147,22 @@ t_arraylist	*ls_files(t_arraylist *filedirs)
 	while (iter_ret > 0)
 	{
 		temp_filedir = iter->pip(iter, &iter_ret);
-		if (!S_ISDIR(temp_filedir->stats->st_mode))
+		if (!(temp_dir = opendir(temp_filedir->path)))
 		{
 			if (!files)
 				files = check_malloc(arraylist(temp_filedir, filedirs->size(filedirs)));
 			else
 				files->push(files, temp_filedir);//Should check malloc here too...
 		}
+		else
+			closedir(temp_dir);
 	}
 	free(iter);
 	//Return collected directories
 	return (files);
 }
 
-t_arraylist	*ls_gen_filedirs(t_filedir *origin_filedir)
+t_arraylist	*ls_gen_filedirs(char *options, t_filedir *origin_filedir)
 {
 	t_arraylist		*filedirs;
 	DIR				*curr_dir;
@@ -173,7 +193,10 @@ t_arraylist	*ls_gen_filedirs(t_filedir *origin_filedir)
 	}
 	closedir(curr_dir);
 	// ft_putendl("(.)(.)(X)(.)");//FIXME//DEBUG//GDB
-	filedirs->sort(filedirs, ls_filedir_cmp);
+	if (ft_strchr(options, 't'))
+		filedirs->sort(filedirs, ls_filedir_t_cmp);
+	else
+		filedirs->sort(filedirs, ls_filedir_cmp);
 	// ft_putendl("(.)(.)(.)(X)");//FIXME//DEBUG//GDB
 	free(root);
 	// ft_putendl("=========================");//FIXME//DEBUG//GDB
@@ -228,7 +251,7 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 	if (!filedirs)
 		return ;
 	//Set dir iterator
-	dirs = ls_dirs(filedirs);
+	dirs = ls_dirs(options, filedirs);
 	//No dirs, no iterate!
 	if (!dirs)
 	{
@@ -257,10 +280,10 @@ void		ls_loop(char *options, t_arraylist *filedirs, char dots)
 			ft_putstr(temp_filedir->path);
 			write(1, ":\n", 2);
 			//Recurse ls_buckle with filedirs from ls_gen_filedirs
-			ls_buckle(options, ls_gen_filedirs(temp_filedir));
+			ls_buckle(options, ls_gen_filedirs(options, temp_filedir));
 		}
 		else if (ft_strchr(options, 'R'))
-			ls_loop(options, ls_gen_filedirs(temp_filedir), 0);
+			ls_loop(options, ls_gen_filedirs(options, temp_filedir), 0);
 	}
 	free(iter);
 	// ft_putendl("Dirs!");//FIXME//DEBUG//GDB
@@ -296,6 +319,8 @@ void		ls_first(char *options, t_arraylist *filedirs)
 		if (do_l)
 			*do_l = 'F';
 		ls_print(options, files);
+		if (filedirs->size(filedirs) > files->size(files))
+			write(1, "\n", 1);
 		files->del(files);
 	}
 	ft_strjoinfree(&options, "^");
@@ -310,6 +335,7 @@ int			main(int argc, char **argv)
 	char			**list;
 	int				listsize;
 	//Temporary DIR* holder
+	DIR				*temp_dir;
 	t_filedir		*temp_filedir;
 	//For arraylist
 	t_arraylist		*filedirs;
@@ -349,9 +375,9 @@ int			main(int argc, char **argv)
 		//Bad filename? End of the line.
 		if (!temp_filedir)
 			return (0);
-		// ft_putchar('$');//FIXME//DEBUG
-		filedirs = ls_gen_filedirs(temp_filedir);
-		// ft_putchar('$');//FIXME//DEBUG 
+		// ft_putchar('#');//FIXME//DEBUG
+		filedirs = ls_gen_filedirs(options, temp_filedir);
+		// ft_putchar('#');//FIXME//DEBUG
 		//Delete temporary filedir
 		del_filedir(temp_filedir);
 		//Move on
@@ -369,10 +395,26 @@ int			main(int argc, char **argv)
 		if (!temp_filedir)
 			return (0);
 		// ft_putchar('$');//FIXME//DEBUG
-		filedirs = ls_gen_filedirs(temp_filedir);
+		if (S_ISDIR(temp_filedir->stats->st_mode))
+		{
+			filedirs = ls_gen_filedirs(options, temp_filedir);
+			//Delete temporary filedir
+			del_filedir(temp_filedir);
+		}
+		else if ((temp_dir = opendir(temp_filedir->path)))
+		{
+			closedir(temp_dir);
+			filedirs = ls_gen_filedirs(options, temp_filedir);
+			//Delete temporary filedir
+			del_filedir(temp_filedir);
+		}
+		else
+		{
+			filedirs = check_malloc(arraylist(temp_filedir, 1));
+			if (ft_strchr(options, 'l'))
+				*(ft_strchr(options, 'l')) = 'F';
+		}
 		// ft_putchar('$');//FIXME//DEBUG 
-		//Delete temporary filedir
-		del_filedir(temp_filedir);
 		//Move on
 		if (ft_strchr(options, 'R'))
 			ls_buckle(options, filedirs);

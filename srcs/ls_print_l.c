@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:33:48 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/30 18:32:36 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/31 19:56:11 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ void	ls_print_permissions(int mode, char *link)
 void	ls_print_time(time_t *clock)
 {
 	write(1, 4+ctime(clock), 7);
-	if (*clock > (time(NULL) - ((2599000 + 43200 - 25000) * 6)))//2592000//2678400
+	if (*clock > time(NULL))
+		write(1, 19+ctime(clock), 5);
+	else if (*clock > (time(NULL) - ((2599000 + 43200 - 25000) * 6)))//2592000//2678400
 		write(1, 11+ctime(clock), 5);
 	else
 		write(1, 19+ctime(clock), 5);
@@ -104,7 +106,10 @@ void	ls_print_l(t_filedir *filedir)
 	write(1, " ", 1);
 	ls_print_time(&filedir->stats->st_mtime);
 	write(1, " ", 1);
-	ft_putstr(filedir->name);
+	if (!getpwuid(filedir->stats->st_uid) && getgrgid(filedir->stats->st_gid))
+		ft_putstr(filedir->path);
+	else
+		ft_putstr(filedir->name);
 	if (filedir->link != NULL)
 	{
 		write(1, " -> ", 4);

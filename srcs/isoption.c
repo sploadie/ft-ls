@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 13:54:12 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/30 18:55:31 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2014/12/31 16:57:13 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 
 int		isoption(char *str)
 {
-	if (!str || !(str[0] == '-' && str[1] != '\0' && ft_isalnum(str[1])))
+	if (ft_strcmp(str, "--") == 0)
 		return (0);
-	return (1);
+	if (str[0] == '-' && str[1] != '\0')
+		return (1);
+	return (0);
+	// if (!str || !(str[0] == '-' && str[1] != '\0' && ft_isalnum(str[1])))
+	// 	return (0);
+	// return (1);
 }
