@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 14:30:21 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/02 15:54:08 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <grp.h>
 # include <uuid/uuid.h>
 # include <sys/xattr.h>
+# include <sys/acl.h>
 # include <time.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -97,9 +98,11 @@ int						ls_filedir_t_cmp(t_filedir *fd1, t_filedir *fd2);
 int						ls_isdir(char *path);
 t_arraylist				*ls_dirs(char *options, t_arraylist *filedirs);
 t_arraylist				*ls_files(t_arraylist *filedirs);
-t_arraylist				*ls_gen_filedirs(char *options, t_filedir *origin_filedir);
+t_arraylist				*ls_gen_filedirs(char *options,
+											t_filedir *origin_filedir);
 
-void					ls_loop(char *options, t_arraylist *filedirs, char dots);
+void					ls_loop(char *options, t_arraylist *filedirs,
+								char dots);
 void					ls_buckle(char *options, t_arraylist *filedirs);
 void					ls_first(char *options, t_arraylist *filedirs);
 

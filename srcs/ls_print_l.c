@@ -6,13 +6,33 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:33:48 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 14:31:06 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/02 15:50:28 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	ls_set_rights(char *str, int mode)
+static int	getacl(char *name)
+{
+	acl_t		facl;
+	acl_entry_t	ae;
+
+	facl = acl_get_link_np(name, ACL_TYPE_EXTENDED);
+	if (facl && (acl_get_entry(facl, ACL_FIRST_ENTRY, &ae) == -1))
+	{
+		acl_free(facl);
+		return (0);
+	}
+	if (facl != NULL)
+	{
+		acl_free(facl);
+		return (1);
+	}
+	acl_free(facl);
+	return (0);
+}
+
+static void	ls_set_rights(char *str, int mode)
 {
 	(mode & S_IRUSR) ? str[1] = 'r' : (void)str;
 	(mode & S_IWUSR) ? str[2] = 'w' : (void)str;
@@ -31,7 +51,7 @@ void	ls_set_rights(char *str, int mode)
 		str[9] = ((str[9] == '-') ? 'T' : 't');
 }
 
-void	ls_print_permissions(int mode, char *link, char *path)
+static void	ls_print_permissions(int mode, char *link, char *path)
 {
 	char		str[11];
 
@@ -47,11 +67,11 @@ void	ls_print_permissions(int mode, char *link, char *path)
 	if ((!link && listxattr(path, NULL, 0, 0) > 0) ||
 		(link && listxattr(path, NULL, 0, XATTR_NOFOLLOW) > 0))
 		str[10] = '@';
-	(0) ? str[10] = '+' : (void)str;
+	(getacl(path)) ? str[10] = '+' : (void)str;
 	ft_putstr(str);
 }
 
-void	ls_print_time(time_t *clock)
+static void	ls_print_time(time_t *clock)
 {
 	write(1, 4 + ctime(clock), 7);
 	if (*clock > time(NULL))
@@ -63,7 +83,7 @@ void	ls_print_time(time_t *clock)
 	write(1, " ", 1);
 }
 
-void	ls_print_l(t_filedir *fldr)
+void		ls_print_l(t_filedir *fldr)
 {
 	t_l_info	*info;
 

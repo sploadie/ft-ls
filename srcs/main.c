@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 14:26:00 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/02 16:01:34 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static void	low_main(char *options, t_filedir *tmp_fldr)
 
 	if (!tmp_fldr)
 		exit(0);
-	if (S_ISDIR(tmp_fldr->stats->st_mode) || ls_isdir(tmp_fldr->path))
+	if (S_ISDIR(tmp_fldr->stats->st_mode)
+		|| (ls_isdir(tmp_fldr->path) && !ft_strchr(options, 'l')))
 	{
 		filedirs = ls_gen_filedirs(options, tmp_fldr);
 		del_filedir(tmp_fldr);
