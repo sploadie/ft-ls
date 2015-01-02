@@ -1,31 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   id_to_name.c                                       :+:      :+:    :+:   */
+/*   ls_print_sp.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/12/29 09:11:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 10:54:49 by tgauvrit         ###   ########.fr       */
+/*   Created: 2015/01/02 14:28:18 by tgauvrit          #+#    #+#             */
+/*   Updated: 2015/01/02 14:28:26 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-char	*uid_to_name(uid_t uid)
+void	ls_print_sp_left(char *str, size_t space)
 {
-	struct passwd	*pw_ptr;
+	size_t	size;
 
-	if ((pw_ptr = getpwuid(uid)) == NULL)
-		return (ft_itoa(uid));
-	return (pw_ptr->pw_name);
+	size = ft_strlen(str);
+	while (space > size)
+	{
+		write(1, " ", 1);
+		space--;
+	}
+	write(1, str, space);
+	write(1, " ", 1);
 }
 
-char	*gid_to_name(gid_t gid)
+void	ls_print_sp_right(char *str, size_t space)
 {
-	struct group	*grp_ptr;
+	size_t	size;
 
-	if ((grp_ptr = getgrgid(gid)) == NULL)
-		return (ft_itoa(gid));
-	return (grp_ptr->gr_name);
+	size = ft_strlen(str);
+	if (space < size)
+		write(1, str, space);
+	else
+		write(1, str, size);
+	while (space > size)
+	{
+		write(1, " ", 1);
+		space--;
+	}
+	write(1, "  ", 2);
 }

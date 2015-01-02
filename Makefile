@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2014/12/29 17:58:22 by tgauvrit         ###   ########.fr        #
+#    Updated: 2015/01/02 14:39:40 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,16 @@ AL_LIB_DIR =	./arraylist/
 SRC_DIR =		./srcs/
 
 SRC_COMPILED =	main.o \
+				del_filedir_arlst.o \
+				ls_filedir_cmp.o \
+				ls_isdir.o \
+				ls_dirs.o \
+				ls_files.o \
+				ls_buckle.o \
+				ls_first.o \
+				ls_loop.o \
+				ls_gen_filedirs.o \
+				ls_print.o \
 				filedir.o \
 				del_filedir.o \
 				ls_perror.o \
@@ -47,6 +57,7 @@ SRC_COMPILED =	main.o \
 				ft_sort_string_array.o \
 				id_to_name.o \
 				ls_print_l.o \
+				ls_print_sp.o \
 				get_set_l_info.o \
 				ls_l_prepare.o \
 				isdots.o \

@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   isoption.c                                         :+:      :+:    :+:   */
+/*   ls_isdir.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/30 13:54:12 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 10:51:22 by tgauvrit         ###   ########.fr       */
+/*   Created: 2015/01/02 11:56:55 by tgauvrit          #+#    #+#             */
+/*   Updated: 2015/01/02 12:03:24 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-int		isoption(char *str)
+int		ls_isdir(char *path)
 {
-	if (ft_strcmp(str, "--") == 0)
+	DIR	*temp_dir;
+
+	if (!(temp_dir = opendir(path)))
 		return (0);
-	if (str[0] == '-' && str[1] != '\0')
-		return (1);
-	return (0);
+	closedir(temp_dir);
+	return (1);
 }

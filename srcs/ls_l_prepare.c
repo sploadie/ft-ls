@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:47:54 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/30 17:39:30 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/02 11:01:50 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,16 @@ static void			extract_l_info(t_l_info *info, t_filedir *filedir)
 		info->size_spacing = temp;
 }
 
-void				ls_l_prepare(char *options, t_arraylist *filedirs)
+static void			ls_print_total(int total)
+{
+	write(1, "total ", 6);
+	ft_putnbr(total);
+	write(1, "\n", 1);
+}
+
+static t_l_info		*ls_get_info(void)
 {
 	t_l_info		*neoinfo;
-	t_arlst_iter	*iter;
-	int				iter_ret;
-	t_filedir		*temp_filedir;
-	unsigned int	file_count;
 
 	if (!get_set_l_info(NULL))
 	{
@@ -61,6 +64,18 @@ void				ls_l_prepare(char *options, t_arraylist *filedirs)
 	}
 	else
 		neoinfo = get_set_l_info(NULL);
+	return (neoinfo);
+}
+
+void				ls_l_prepare(char *options, t_arraylist *filedirs)
+{
+	t_l_info		*neoinfo;
+	t_arlst_iter	*iter;
+	int				iter_ret;
+	t_filedir		*temp_filedir;
+	unsigned int	file_count;
+
+	neoinfo = ls_get_info();
 	ft_bzero(neoinfo, sizeof(t_l_info));
 	file_count = 0;
 	iter = arlst_iter(filedirs);
@@ -73,11 +88,7 @@ void				ls_l_prepare(char *options, t_arraylist *filedirs)
 	}
 	free(iter);
 	if ((neoinfo->block_mem_total || file_count) && !ft_strchr(options, 'F'))
-	{
-		write(1, "total ", 6);
-		ft_putnbr(neoinfo->block_mem_total);
-		write(1, "\n", 1);
-	}
+		ls_print_total(neoinfo->block_mem_total);
 	if (ft_strchr(options, 'F'))
 		*(ft_strchr(options, 'F')) = 'l';
 }

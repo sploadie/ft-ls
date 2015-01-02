@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2014/12/30 18:46:23 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/02 14:30:21 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct			s_l_info
 	unsigned int		size_spacing;
 }						t_l_info;
 
-void					ls_perror(char *s);
+void					*ls_perror(char *s);
 void					*check_malloc(void *ret);
 
 int						isoption(char *str);
@@ -89,11 +89,26 @@ void					del_filedir(t_filedir *filedir);
 int						isdots(char *name);
 int						show_entry(char *options, char *name);
 
-void					ls_buckle(char *options, t_arraylist *filedirs);
+void					del_filedir_arlst(t_arraylist *filedirs);
 
+int						ls_filedir_cmp(t_filedir *fd1, t_filedir *fd2);
+int						ls_filedir_t_cmp(t_filedir *fd1, t_filedir *fd2);
+
+int						ls_isdir(char *path);
+t_arraylist				*ls_dirs(char *options, t_arraylist *filedirs);
+t_arraylist				*ls_files(t_arraylist *filedirs);
+t_arraylist				*ls_gen_filedirs(char *options, t_filedir *origin_filedir);
+
+void					ls_loop(char *options, t_arraylist *filedirs, char dots);
+void					ls_buckle(char *options, t_arraylist *filedirs);
+void					ls_first(char *options, t_arraylist *filedirs);
+
+void					ls_print(char *options, t_arraylist *filedirs);
 void					ls_print_l(t_filedir *filedir);
 void					ls_l_prepare(char *options, t_arraylist *filedirs);
 t_l_info				*get_set_l_info(t_l_info *info);
+void					ls_print_sp_left(char *str, size_t space);
+void					ls_print_sp_right(char *str, size_t space);
 
 char					*uid_to_name(uid_t uid);
 char					*gid_to_name(gid_t gid);
