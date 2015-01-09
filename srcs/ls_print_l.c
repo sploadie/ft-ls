@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:33:48 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 15:50:28 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/09 16:24:43 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,18 @@ static void	ls_print_time(time_t *clock)
 	write(1, " ", 1);
 }
 
+static void	ls_print_size(t_l_info *info, t_stat *stats)
+{
+	if (S_ISCHR(stats->st_mode) || S_ISBLK(stats->st_mode))
+	{
+		ls_print_left(ft_itoa(major(stats->st_rdev)), info->major_spacing + 1);
+		write(1, ", ", 2);
+		ls_print_sp_left(ft_itoa(minor(stats->st_rdev)), info->minor_spacing);
+	}
+	else
+		ls_print_sp_left(ft_itoa(stats->st_size), info->size_spacing);
+}
+
 void		ls_print_l(t_filedir *fldr)
 {
 	t_l_info	*info;
@@ -92,7 +104,7 @@ void		ls_print_l(t_filedir *fldr)
 	ls_print_sp_left(ft_itoa(fldr->stats->st_nlink), info->link_spacing);
 	ls_print_sp_right(uid_to_name(fldr->stats->st_uid), info->user_spacing);
 	ls_print_sp_right(gid_to_name(fldr->stats->st_gid), info->group_spacing);
-	ls_print_sp_left(ft_itoa(fldr->stats->st_size), info->size_spacing);
+	ls_print_size(info, fldr->stats);
 	ls_print_time(&fldr->stats->st_mtime);
 	if (!getpwuid(fldr->stats->st_uid) && getgrgid(fldr->stats->st_gid))
 		ft_putstr(fldr->path);

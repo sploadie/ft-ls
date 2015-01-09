@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 13:37:49 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/09 13:55:35 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/09 15:57:24 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,28 @@ t_filedir	*filedir(char *input_path)
 	{
 		neofiledir->name = neofiledir->path;
 	}
+	neofiledir->name_len = ft_strlen(neofiledir->name);
+	neofiledir->stats = check_malloc(malloc(sizeof(struct stat)));
+	if (lstat(neofiledir->path, neofiledir->stats) == -1 &&
+		stat(neofiledir->path, neofiledir->stats) == -1)
+	{
+		ls_perror(neofiledir->path);
+		neofiledir->link = NULL;
+		del_filedir(neofiledir);
+		return (NULL);
+	}
+	get_file_link(neofiledir);
+	return (neofiledir);
+}
+
+t_filedir	*direct_filedir(char *input_path)
+{
+	t_filedir	*neofiledir;
+
+	tru_arg(input_path);
+	neofiledir = check_malloc(malloc(sizeof(t_filedir) * 2));
+	neofiledir->path = check_malloc(ft_strdup(input_path));
+	neofiledir->name = neofiledir->path;
 	neofiledir->name_len = ft_strlen(neofiledir->name);
 	neofiledir->stats = check_malloc(malloc(sizeof(struct stat)));
 	if (lstat(neofiledir->path, neofiledir->stats) == -1 &&

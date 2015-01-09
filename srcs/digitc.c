@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   isdots.c                                           :+:      :+:    :+:   */
+/*   digitc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/12/29 11:56:53 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/09 16:08:27 by tgauvrit         ###   ########.fr       */
+/*   Created: 2015/01/09 14:04:31 by tgauvrit          #+#    #+#             */
+/*   Updated: 2015/01/09 14:05:00 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-int		isdots(char *name)
+unsigned int	digitc(unsigned int n)
 {
-	if (!ft_strcmp(".", name) || !ft_strcmp("..", name))
-		return (1);
-	if (!ft_strcmp("./", name) || !ft_strcmp("../", name))
-		return (1);
-	return (0);
+	int		count;
+	long	tens;
+
+	count = 1;
+	tens = 10;
+	while (n >= tens)
+	{
+		tens = tens * 10;
+		count++;
+	}
+	return (count);
 }

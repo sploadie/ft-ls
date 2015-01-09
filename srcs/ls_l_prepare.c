@@ -6,25 +6,27 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:47:54 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 11:01:50 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/09 16:22:51 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-static unsigned int	digitc(unsigned int n)
+static unsigned int	ls_size_size(t_l_info *info, t_filedir *filedir)
 {
-	int		count;
-	long	tens;
+	unsigned int	temp;
 
-	count = 1;
-	tens = 10;
-	while (n >= tens)
+	if (S_ISCHR(filedir->stats->st_mode) || S_ISBLK(filedir->stats->st_mode))
 	{
-		tens = tens * 10;
-		count++;
+		temp = digitc(minor(filedir->stats->st_rdev));
+		if (info->minor_spacing < temp)
+			info->minor_spacing = temp;
+		temp = digitc(major(filedir->stats->st_rdev) + 1);
+		if (info->major_spacing < temp)
+			info->major_spacing = temp;
+		return (digitc(minor(filedir->stats->st_rdev)) + digitc(major(filedir->stats->st_rdev)) + 4);
 	}
-	return (count);
+	return (digitc(filedir->stats->st_size));
 }
 
 static void			extract_l_info(t_l_info *info, t_filedir *filedir)
@@ -41,7 +43,7 @@ static void			extract_l_info(t_l_info *info, t_filedir *filedir)
 	temp = ft_strlen(gid_to_name(filedir->stats->st_gid));
 	if (info->group_spacing < temp)
 		info->group_spacing = temp;
-	temp = digitc(filedir->stats->st_size);
+	temp = ls_size_size(info, filedir);
 	if (info->size_spacing < temp)
 		info->size_spacing = temp;
 }

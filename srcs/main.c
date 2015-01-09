@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/09 13:55:16 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/09 16:05:58 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_arraylist	*filedirs_from_list(int listsize, char **list)
 	filedirs = NULL;
 	while (i < listsize)
 	{
-		if ((tmp_fldr = filedir(list[i])) != NULL)
+		if ((tmp_fldr = direct_filedir(list[i])) != NULL)
 		{
 			if (!filedirs)
 				filedirs = check_malloc(arraylist(tmp_fldr, listsize));
@@ -96,9 +96,9 @@ int			main(int listsize, char **list)
 	if (listsize <= 1)
 	{
 		if (listsize < 1)
-			tmp_fldr = filedir(".");
+			tmp_fldr = direct_filedir(".");
 		else
-			tmp_fldr = filedir(*list);
+			tmp_fldr = direct_filedir(*list);
 		low_main(options, tmp_fldr);
 	}
 	else if ((filedirs = filedirs_from_list(listsize, list)) != NULL)

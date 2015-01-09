@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2015/01/02 14:39:40 by tgauvrit         ###   ########.fr        #
+#    Updated: 2015/01/09 14:04:12 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,8 @@ SRC_COMPILED =	main.o \
 				get_set_l_info.o \
 				ls_l_prepare.o \
 				isdots.o \
-				show_entry.o
+				show_entry.o \
+				digitc.o
 
 COMPILED =		$(SRC_COMPILED)
 
