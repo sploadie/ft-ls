@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:13:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/02 16:01:34 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/09 13:55:16 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,29 @@ t_arraylist	*filedirs_from_list(int listsize, char **list)
 	return (filedirs);
 }
 
+static int	tru_arg(char *arg)
+{
+	if (*arg == '\0')
+	{
+		ft_putendl_fd("ls: fts_open: No such file or directory", 2);
+		exit(1);
+	}
+	return (1);
+}
+
+static int	deal_options(char **options, int listsize, char **list)
+{
+	int	i;
+
+	i = 1;
+	while (i < listsize && tru_arg(list[i]) && isoption(list[i]))
+		ft_strjoinfree(options, list[i++] + 1);
+	check_options(*options);
+	if (i < listsize && ft_strcmp(list[i], "--") == 0)
+		i++;
+	return (i);
+}
+
 int			main(int listsize, char **list)
 {
 	int				i;
@@ -67,12 +90,7 @@ int			main(int listsize, char **list)
 	t_arraylist		*filedirs;
 
 	options = check_malloc(ft_strnew(0));
-	i = 1;
-	while (i < listsize && isoption(list[i]))
-		ft_strjoinfree(&options, list[i++] + 1);
-	if (i < listsize && ft_strcmp(list[i], "--") == 0)
-		i++;
-	check_options(options);
+	i = deal_options(&options, listsize, list);
 	list = list + i;
 	listsize = listsize - i;
 	if (listsize <= 1)
