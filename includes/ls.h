@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/20 17:12:51 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/09 16:14:58 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/10 09:24:57 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void					ls_loop(char *options, t_arraylist *filedirs,
 void					ls_buckle(char *options, t_arraylist *filedirs);
 void					ls_first(char *options, t_arraylist *filedirs);
 
+int						getacl(char *name);
 void					ls_print(char *options, t_arraylist *filedirs);
 void					ls_print_l(t_filedir *filedir);
 void					ls_l_prepare(char *options, t_arraylist *filedirs);

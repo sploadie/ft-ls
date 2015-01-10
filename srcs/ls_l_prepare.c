@@ -6,27 +6,28 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/29 09:47:54 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/09 16:22:51 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/10 09:33:09 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-static unsigned int	ls_size_size(t_l_info *info, t_filedir *filedir)
+static unsigned int	ls_size_size(t_l_info *info, t_stat *stats)
 {
-	unsigned int	temp;
+	unsigned int	temp_minor;
+	unsigned int	temp_major;
 
-	if (S_ISCHR(filedir->stats->st_mode) || S_ISBLK(filedir->stats->st_mode))
+	if (S_ISCHR(stats->st_mode) || S_ISBLK(stats->st_mode))
 	{
-		temp = digitc(minor(filedir->stats->st_rdev));
-		if (info->minor_spacing < temp)
-			info->minor_spacing = temp;
-		temp = digitc(major(filedir->stats->st_rdev) + 1);
-		if (info->major_spacing < temp)
-			info->major_spacing = temp;
-		return (digitc(minor(filedir->stats->st_rdev)) + digitc(major(filedir->stats->st_rdev)) + 4);
+		temp_minor = digitc(minor(stats->st_rdev));
+		if (info->minor_spacing < temp_minor)
+			info->minor_spacing = temp_minor;
+		temp_major = digitc(major(stats->st_rdev));
+		if (info->major_spacing < temp_major)
+			info->major_spacing = temp_major;
+		return (temp_minor + temp_major + 4);
 	}
-	return (digitc(filedir->stats->st_size));
+	return (digitc(stats->st_size));
 }
 
 static void			extract_l_info(t_l_info *info, t_filedir *filedir)
@@ -43,7 +44,7 @@ static void			extract_l_info(t_l_info *info, t_filedir *filedir)
 	temp = ft_strlen(gid_to_name(filedir->stats->st_gid));
 	if (info->group_spacing < temp)
 		info->group_spacing = temp;
-	temp = ls_size_size(info, filedir);
+	temp = ls_size_size(info, filedir->stats);
 	if (info->size_spacing < temp)
 		info->size_spacing = temp;
 }
